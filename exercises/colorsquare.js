@@ -14,8 +14,15 @@ class ColorSquare{
 		you'll need to bind the handleClick method to this object:
 			this.handleClick = this.handleClick.bind(this)
 	*/
-	constructor( ){
+	constructor(colorsArray, colorIndex, domElementClass ){
+	    this.colorsArray = colorsArray;
+	    this.colorIndex = colorIndex;
+	    this.domElementClass = domElementClass;
+	    this.domElement;
+	    this.rightNeighbor = null;
+	    this.handleClick = this.handleClick.bind(this);
 	}
+
 	/*setter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set
 	arguments: 
@@ -24,10 +31,14 @@ class ColorSquare{
 		true / false, depending on success
 	notes:
 		make sure it only sets the neighbor if it is the right class constructor (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
-		if it is the right constructor, set the neightbor
+		if it is the right constructor, set the neighbor
 	*/
-	set neighbor(){
-
+	set neighbor(newNeighbor){
+        if (newNeighbor){
+            if (newNeighbor.constructor.name === "ColorSquare") {
+                this.rightNeighbor = newNeighbor;
+            }
+        }
 	}
 	/* getter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
@@ -37,7 +48,7 @@ class ColorSquare{
 		this object's property of the neighbor to the right
 	*/
 	get neighbor(){
-
+        return this.rightNeighbor;
 	}
 	/*
 	click handler for this dom element
@@ -53,9 +64,18 @@ class ColorSquare{
 			yes, this will cause a cascade of all the elements to the right
 			make sure the rightNeighbor is something!  the rightmost element won't have a neighbor
 		*/
-	handleClick(){
-
+	handleClick(event){
+        this.colorIndex++;
+        if (this.colorIndex > this.colorsArray.length-1){
+            this.colorIndex = 0 ;
+        }
+        var currentColor = this.colorsArray[this.colorIndex];
+        this.changeColor(currentColor);
+        if (this.rightNeighbor !== null){
+            this.rightNeighbor.handleClick();
+        }
 	}
+
 	/*
 	change the color of the current element
 	arguments:
@@ -63,11 +83,12 @@ class ColorSquare{
 	returns:
 		nothing
 	notes:
-		changes the current object's dom element's backgound color to the argument color
+		changes the current object's dom element's background color to the argument color
 	*/
-	changeColor(  ){
-
+	changeColor( newColor ){
+        this.domElement.css("background-color", newColor);
 	}
+
 	/*
 	render / generate the dom element for the current object 
 	arguments: 
@@ -82,6 +103,14 @@ class ColorSquare{
 		return the dom element that was generated. 
 	*/
 	render(){
-
+        var newElement = $("<div>",{
+            "class": this.domElementClass,
+            on: {
+                click: this.handleClick
+            },
+            "background-color": this.colorsArray[this.colorIndex]
+        });
+        this.domElement = newElement;
+	    return this.domElement;
 	}
 }
