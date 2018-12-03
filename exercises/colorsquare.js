@@ -35,7 +35,8 @@ class ColorSquare{
 	*/
 	set neighbor(newNeighbor){
         if (newNeighbor){
-            if (newNeighbor.constructor.name === "ColorSquare") {
+            if(newNeighbor.constructor === this.constructor ){
+            // if (newNeighbor.constructor.name === "ColorSquare") {
                 this.rightNeighbor = newNeighbor;
             }
         }
@@ -66,7 +67,8 @@ class ColorSquare{
 		*/
 	handleClick(event){
         this.colorIndex++;
-        if (this.colorIndex > this.colorsArray.length-1){
+        if (this.colorIndex === this.colorsArray.length){
+        // if (this.colorIndex > this.colorsArray.length-1){
             this.colorIndex = 0 ;
         }
         var currentColor = this.colorsArray[this.colorIndex];
